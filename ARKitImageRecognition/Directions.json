@@ -1,0 +1,29 @@
+{
+  "CSE": {
+    "directions": [
+        {
+          "name": "straight",
+          "distance": 10,
+          "rotation": -90
+        },
+        {
+          "name": "left",
+          "distance": 2,
+          "rotation": -180
+        }
+    ]
+  },
+  "IT": {
+    "directions": [
+        {
+          "name": "left",
+          "distance": 12
+        },
+        {
+          "name": "left",
+          "distance": 12
+        }
+      
+    ]
+  }
+}
