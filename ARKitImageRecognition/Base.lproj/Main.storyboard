@@ -40,35 +40,61 @@
                                         </connections>
                                     </barButtonItem>
                                     <barButtonItem style="plain" id="paV-2W-xMa">
-                                        <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="r1O-Z7-9k5">
-                                            <rect key="frame" x="199" y="11" width="20" height="22"/>
+                                        <button key="customView" opaque="NO" contentMode="scaleAspectFit" semanticContentAttribute="playback" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" id="r1O-Z7-9k5">
+                                            <rect key="frame" x="194" y="4.5" width="30" height="35"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <state key="normal" image="mic.circle" catalog="system"/>
+                                            <state key="normal" backgroundImage="mic.circle" catalog="system">
+                                                <preferredSymbolConfiguration key="preferredSymbolConfiguration" scale="default"/>
+                                            </state>
+                                            <connections>
+                                                <action selector="startRecordingWithSender:" destination="BYZ-38-t0r" eventType="touchUpInside" id="uAT-3q-6EC"/>
+                                            </connections>
                                         </button>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="cz5-I3-l01"/>
                                 </items>
                                 <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </toolbar>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="7Kl-ax-L0n">
+                                <rect key="frame" x="78" y="419" width="240" height="128"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
+                                <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" text="te3st speech" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="geh-Y4-QcY">
+                                <rect key="frame" x="67" y="427" width="240" height="128"/>
+                                <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                <color key="textColor" systemColor="labelColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                            </textView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="bottom" secondItem="KdE-5q-u14" secondAttribute="bottom" id="3xp-xt-Yen"/>
+                            <constraint firstItem="geh-Y4-QcY" firstAttribute="centerX" secondItem="Odu-x6-OJc" secondAttribute="centerX" id="62K-o4-Rd8"/>
                             <constraint firstAttribute="trailing" secondItem="Odu-x6-OJc" secondAttribute="trailing" id="AJu-57-wse"/>
                             <constraint firstItem="h5S-mD-1ya" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="CVY-Je-TJk"/>
                             <constraint firstItem="KdE-5q-u14" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="D0R-tW-eam"/>
                             <constraint firstItem="KdE-5q-u14" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="IVk-8K-5Su"/>
                             <constraint firstItem="h5S-mD-1ya" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="Nkt-TC-Iud"/>
+                            <constraint firstItem="geh-Y4-QcY" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="67" id="SQS-cw-Wlo"/>
                             <constraint firstAttribute="trailing" secondItem="KdE-5q-u14" secondAttribute="trailing" id="aXO-tf-eq2"/>
                             <constraint firstAttribute="trailing" secondItem="h5S-mD-1ya" secondAttribute="trailing" id="bgE-MO-OFp"/>
                             <constraint firstItem="Odu-x6-OJc" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="g2G-5b-TIA"/>
+                            <constraint firstItem="geh-Y4-QcY" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="427" id="hOE-Bx-VNu"/>
+                            <constraint firstItem="Odu-x6-OJc" firstAttribute="top" secondItem="geh-Y4-QcY" secondAttribute="bottom" constant="24" id="oYl-uT-2zl"/>
                             <constraint firstItem="h5S-mD-1ya" firstAttribute="top" secondItem="Odu-x6-OJc" secondAttribute="bottom" id="r1o-B5-vnd"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
                         <outlet property="label" destination="Odu-x6-OJc" id="9DN-QD-YwH"/>
-                        <outlet property="recordingButton" destination="r1O-Z7-9k5" id="Wpl-v8-L9h"/>
+                        <outlet property="recognizedText" destination="geh-Y4-QcY" id="twO-Kb-ChY"/>
+                        <outlet property="recordingButton" destination="r1O-Z7-9k5" id="JnB-6l-zuY"/>
                         <outlet property="sceneView" destination="KdE-5q-u14" id="tTh-pN-MID"/>
                     </connections>
                 </viewController>
@@ -76,8 +102,34 @@
             </objects>
             <point key="canvasLocation" x="1076" y="132.68365817091455"/>
         </scene>
+        <!--View Controller2-->
+        <scene sceneID="S8a-Vg-ujQ">
+            <objects>
+                <viewController id="gYF-U8-zdW" customClass="ViewController2" customModule="ARKitImageRecognition" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="J6r-U2-oZU">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MR6-NC-KR1">
+                                <rect key="frame" x="163" y="309" width="48" height="48"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" backgroundImage="mic"/>
+                                <connections>
+                                    <action selector="buttonTapped:" destination="gYF-U8-zdW" eventType="touchUpInside" id="ddr-UU-rGD"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="Acz-aK-b6T"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2MA-5P-xF1" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1804" y="133"/>
+        </scene>
     </scenes>
     <resources>
+        <image name="mic" width="48" height="48"/>
         <image name="mic.circle" catalog="system" width="64" height="60"/>
     </resources>
 </document>

@@ -12,6 +12,9 @@ class KeywordsSpeechService: SpeechService {
     
     func action(for text: String) -> SpeechAction? {
         let lowercased = text.lowercased()
+        
+        
+        
         let words: [String] = lowercased
             .components(separatedBy: .punctuationCharacters)
             .joined()
@@ -21,15 +24,19 @@ class KeywordsSpeechService: SpeechService {
     }
     
     private func action(for words: [String]) -> SpeechAction? {
-        for word in words {
-//            if let animalType = AnimalType(rawValue: word) {
-//                return SpeechAction.addAnimal(animalType)
-//            }
-//            if let animateType = AnimationType(rawValue: word) {
-//                return SpeechAction.animateAnimal(animateType)
-//            }
+        if (words.contains("hello") || words.contains("hi")) /* && words.contains("kirrobot") || words.contains("kirobot") */ {
+            return .greetings
         }
-        return nil
+        
+        if words.contains("stop") {
+            return .stop
+        }
+        
+        if words.contains("start") {
+            return .start
+        }
+        
+        return .question
     }
     
 }

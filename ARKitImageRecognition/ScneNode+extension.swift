@@ -8,9 +8,19 @@
 
 import Foundation
 import SceneKit
+import AVFoundation
 
 extension SCNNode {
-    func play(sound: Sound) {
-        self.runAction(SCNAction.playAudio(sound.audioSource, waitForCompletion: false))
+    
+    func play(sound: Sound, _ customVoice: Bool = false, synthesizer: AVSpeechSynthesizer?) {
+        
+        if !customVoice, let synthesizer = synthesizer  {
+            let utterance = AVSpeechUtterance(string: sound.textToSpeech)
+            utterance.voice = AVSpeechSynthesisVoice()
+            synthesizer.speak(utterance)
+        } else {
+            self.runAction(SCNAction.playAudio(sound.audioSource, waitForCompletion: false))
+        }
+        
     }
 }

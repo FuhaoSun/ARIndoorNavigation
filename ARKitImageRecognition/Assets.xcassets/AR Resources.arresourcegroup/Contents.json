@@ -5,16 +5,10 @@
   },
   "resources" : [
     {
-      "filename" : "Book.arreferenceimage"
-    },
-    {
       "filename" : "qrCode.arreferenceimage"
     },
     {
       "filename" : "Snow Mountain.arreferenceimage"
-    },
-    {
-      "filename" : "Trees In the Dark.arreferenceimage"
     }
   ]
 }

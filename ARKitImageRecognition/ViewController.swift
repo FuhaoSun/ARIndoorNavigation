@@ -27,13 +27,23 @@ class ViewController: UIViewController {
     var audioSession = AVAudioSession.sharedInstance()
     var timer: Timer?
     let speechService: SpeechService = KeywordsSpeechService()
+    let useCustomVoice = false
+    var isVoiceOverDone: Bool = false {
+        didSet(newValue) {
+            pandasNode.isPaused = newValue
+        }
+    }
+    var isGreeted: Bool = false
+    
+    let synthesizer = AVSpeechSynthesizer()
+    
     
     //Animation variables
     let fadeDuration: TimeInterval = 0.3
     let rotateDuration: TimeInterval = 3
     let waitDuration: TimeInterval = 0.5
     let speedRatio: Float = (0.6 / 60)
-    let stairsSpeedRatio: Float = (0.2 / 50)
+    let stairsSpeedRatio: Float = (0.2 / 70)
     let constantDistance: Float = 3.0
     private var walkAnimation: CAAnimation!
     
@@ -54,7 +64,6 @@ class ViewController: UIViewController {
             let node = scene.rootNode.childNode(withName: "panda", recursively: false) else { return SCNNode() }
         let scaleFactor  = 0.9
         node.scale = SCNVector3(scaleFactor, scaleFactor, scaleFactor)
-        node.eulerAngles = SCNVector3(0,deg2rad(180), 0)
         return node
     }()
     
@@ -69,8 +78,13 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         sceneView.delegate = self
         sceneView.session.delegate = self
+        synthesizer.delegate = self
+        speechRecognizer.delegate = self
+        checkPermissions()
+        
         configureLighting()
         loadAnimation()
+        
     }
     
     func configureLighting() {
@@ -101,8 +115,10 @@ class ViewController: UIViewController {
         let options: ARSession.RunOptions = [.resetTracking, .removeExistingAnchors]
         sceneView.session.run(configuration, options: options)
         directionsEndStatus = []
+        isVoiceOverDone = false
+        isGreeted = false
         directions = nil
-//        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
+        //        sceneView.debugOptions = [ARSCNDebugOptions.showFeaturePoints, ARSCNDebugOptions.showWorldOrigin]
         
         
         label.text = "Move camera around to detect images"
@@ -135,8 +151,10 @@ extension ViewController: ARSCNViewDelegate {
                 let imageName = imageAnchor.referenceImage.name else { return }
             node.addChildNode(self.pandasNode)
             self.pandasNode.addAnimation(self.walkAnimation, forKey: "walk")
+            self.pandasNode.isPaused = true
             self.isPandasCharectorAdded = true
             self.directions = self.getDirections(withImageName: imageName)
+            self.pandasNode.play(sound: .introduction, synthesizer: self.synthesizer)
             
             self.label.text = "Image detected: \"\(imageName)\""
         }
@@ -158,45 +176,80 @@ extension ViewController: ARSessionDelegate {
         
         switch directionDetail.name {
             
+        case .initial:
+            
+            if pandasInitialPosition == nil && isGreeted {
+                pandasInitialPosition = pandasNode.position.z
+                self.pandasNode.play(sound: .welcome, useCustomVoice, synthesizer: synthesizer)
+            }
+            
+            if isVoiceOverDone {
+                prepareForNextMovement(rotationalAngle: directionDetail.rotation ?? 180)
+            }
+            
         case .straight:
             //if the distance between charector and user camera is more than 3 meters we presume that user is not moving
             isPersonMoving = cameraNode.position.z - pandasNode.position.z < constantDistance
-            pandasInitialPosition = pandasInitialPosition ?? pandasNode.position.z
-            moveTheObject(fromCurrent : { pandasNode.position.z },
-                          directionDetail: directionDetail,
-                          isPersonMoving,
-                          transformFunction: { pandasNode.position.z -= speedRatio })
             
-            if directionDetail.stairs != nil {
-                pandasNode.position.y += stairsSpeedRatio
-            }
-            
-            
-             DispatchQueue.main.async {
-                self.label.text = "straigt - \(cameraNode.position.z - self.pandasNode.position.z)"
-
+            if isVoiceOverDone {
+                moveTheObject(fromCurrent : { pandasNode.position.z },
+                              directionDetail: directionDetail,
+                              isPersonMoving,
+                              transformFunction: { pandasNode.position.z -= speedRatio })
+                
+                //for stairs
+                checkStairs(for: directionDetail)
+            } else {
+                if pandasInitialPosition == nil {
+                    pandasInitialPosition = pandasNode.position.z
+                    playAudio(for: directionDetail, sound: .straight)
                 }
+            }
             
         case .left:
             isPersonMoving = cameraNode.position.x - pandasNode.position.x < constantDistance
-            pandasInitialPosition = pandasInitialPosition ?? pandasNode.position.x
-            moveTheObject(fromCurrent : { pandasNode.position.x },
-                          directionDetail: directionDetail,
-                          isPersonMoving,
-                          transformFunction: { pandasNode.position.x -= speedRatio })
-            DispatchQueue.main.async {
-                self.label.text = "left - count \(self.directionsEndStatus.count)"
+            
+            if isVoiceOverDone {
+                moveTheObject(fromCurrent : { pandasNode.position.x },
+                              directionDetail: directionDetail,
+                              isPersonMoving,
+                              transformFunction: { pandasNode.position.x -= speedRatio })
+                
+                //for stairs
+                checkStairs(for: directionDetail)
+                
+                DispatchQueue.main.async {
+                    self.label.text = "straigt - \(cameraNode.position.x - self.pandasNode.position.x)"
+                    
+                }
+            } else {
+                if pandasInitialPosition == nil {
+                    pandasInitialPosition = pandasNode.position.x
+                    playAudio(for: directionDetail, sound: .left)
+                }
             }
             
         case .right:
             isPersonMoving = cameraNode.position.x - pandasNode.position.x < constantDistance
-            pandasInitialPosition = pandasInitialPosition ?? pandasNode.position.x
-            moveTheObject(fromCurrent : { pandasNode.position.x },
-                          directionDetail: directionDetail,
-                          isPersonMoving,
-                          transformFunction: { pandasNode.position.x += speedRatio })
-            DispatchQueue.main.async {
-                self.label.text = "right - count \(self.directionsEndStatus.count)"
+            
+            if isVoiceOverDone {
+                moveTheObject(fromCurrent : { pandasNode.position.x },
+                              directionDetail: directionDetail,
+                              isPersonMoving,
+                              transformFunction: { pandasNode.position.x += speedRatio })
+                
+                //for stairs
+                checkStairs(for: directionDetail)
+                
+                DispatchQueue.main.async {
+                    self.label.text = "straigt - \(cameraNode.position.x - self.pandasNode.position.x)"
+                    
+                }
+            } else {
+                if pandasInitialPosition == nil {
+                    pandasInitialPosition = pandasNode.position.x
+                    playAudio(for: directionDetail, sound: .left)
+                }
             }
             
         default:
@@ -210,7 +263,7 @@ extension ViewController: ARSessionDelegate {
                        transformFunction: () -> ()) {
         let movedPosition = abs(currentPosition() - pandasInitialPosition!)
         pandasNode.isPaused = !(isPandasCharectorAdded && isPersonMoving)
-
+        
         if movedPosition <= directionDetail.distance && !pandasNode.isPaused {
             transformFunction()
         } else {
@@ -220,14 +273,50 @@ extension ViewController: ARSessionDelegate {
     
     func prepareForNextMovement(rotationalAngle: Double?) {
         if let rotation = rotationalAngle {
-//            let rotate = SCNAction.rotateBy(x: CGFloat(deg2rad(rotation)), y: 0, z: 0, duration: 1)
-
+            //            let rotate = SCNAction.rotateBy(x: CGFloat(deg2rad(rotation)), y: 0, z: 0, duration: 1)
+            
             pandasNode.eulerAngles.y = Float(deg2rad(rotation))
         }
         pandasInitialPosition = nil
+        isVoiceOverDone = false
         directionsEndStatus.append(true)
     }
     
+    
+    func checkStairs(for directionDetail: DirectionItem) {
+        if let slope = directionDetail.slope {
+            if slope == .up {
+                pandasNode.position.y += stairsSpeedRatio
+            } else {
+                pandasNode.position.y -= stairsSpeedRatio
+            }
+        }
+    }
+    
+    
+    
+    func playAudio(for directionDetail: DirectionItem, sound: Sound) {
+        if let slope = directionDetail.slope {
+            if slope == .up {
+                self.pandasNode.play(sound: .stairsUP, useCustomVoice, synthesizer: synthesizer)
+            } else {
+                self.pandasNode.play(sound: .stairsDown, useCustomVoice, synthesizer: synthesizer)
+            }
+        } else {
+            self.pandasNode.play(sound: sound, useCustomVoice, synthesizer: synthesizer)
+        }
+    }
+    
+}
+
+extension ViewController: AVSpeechSynthesizerDelegate {
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        
+        if isGreeted {
+            isVoiceOverDone = true
+        }
+        
+    }
 }
 
 

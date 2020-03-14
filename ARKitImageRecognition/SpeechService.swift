@@ -12,6 +12,7 @@ enum SpeechAction {
     case stop
     case start
     case question
+    case greetings
 }
 
 protocol SpeechService {

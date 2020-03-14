@@ -204,11 +204,16 @@ extension ViewController {
         
         switch action {
         case .start:
-            print("start")
+            pandasNode.isPaused = false
         case .stop:
-            print("start")
+            pandasNode.isPaused = true
         case .question:
-            print("start")
+            pandasNode.isPaused = true
+            pandasNode.play(sound: .dontAskMe, synthesizer: synthesizer)
+        case .greetings:
+            isGreeted = true
+            print("gretted")
+
         }
     }
     

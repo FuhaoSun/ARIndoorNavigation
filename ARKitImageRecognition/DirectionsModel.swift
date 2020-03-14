@@ -22,11 +22,15 @@ struct DirectionItem: Codable {
     let name: Direction
     let distance: Float
     var rotation: Double?
-    var stairs: Bool?
+    var slope: Slope?
+}
+
+enum Slope: String, Codable {
+    case up, down
 }
 
 enum Direction: String, Codable {
-    case right, left, straight, up, down
+    case initial, right, left, straight, up, down
 }
 
 

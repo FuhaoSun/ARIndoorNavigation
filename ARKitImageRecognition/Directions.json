@@ -2,19 +2,34 @@
   "CSE": {
     "directions": [
         {
-          "name": "straight",
-          "distance": 10,
-          "rotation": -90
+        "name": "initial",
+        "distance": 0,
+        "rotation": 180
         },
         {
-          "name": "left",
-          "distance": 2,
-          "rotation": -180
+        "name": "straight",
+        "distance": 7,
+        "rotation": 90,
+        },
+        {
+        "name": "left",
+        "distance": 7,
+        "rotation": -90
+        },
+        {
+        "name": "left",
+        "distance": 7,
+        "rotation": -90
         }
     ]
   },
   "IT": {
     "directions": [
+        {
+        "name": "initial",
+        "distance": 0,
+        "rotation": 180
+        },
         {
           "name": "left",
           "distance": 12
